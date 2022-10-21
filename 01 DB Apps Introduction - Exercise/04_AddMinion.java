@@ -32,7 +32,7 @@ public class _04_AddMinion {
         insertMinion.executeUpdate();
 
         PreparedStatement getLastMinion = connection.prepareStatement(
-                "select id from minions order by  id DESC");
+                "select id from minions order by  id DESC limit 1");
         ResultSet lastMinionSet = getLastMinion.executeQuery();
         lastMinionSet.next();
         int lastMinionId = lastMinionSet.getInt("id");
