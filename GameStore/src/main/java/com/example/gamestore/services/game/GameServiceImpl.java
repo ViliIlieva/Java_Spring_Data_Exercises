@@ -1,6 +1,7 @@
 package com.example.gamestore.services.game;
 
 import com.example.gamestore.domain.dtos.GameDTO;
+import com.example.gamestore.domain.dtos.GameToEditDTO;
 import com.example.gamestore.domain.entities.Game;
 import com.example.gamestore.repositories.GameRepository;
 import com.example.gamestore.services.user.UserService;
@@ -34,7 +35,6 @@ public class GameServiceImpl implements GameService {
         this.gameService = gameService;
     }
 
-    @Bean
     public ModelMapper getModelMapper() {
         return modelMapper;
     }
@@ -63,27 +63,30 @@ public class GameServiceImpl implements GameService {
     @Override
     public String editGame(String[] args) {
         Long id = Long.parseLong (args[1]);
-        GameDTO gameDTO = gameService.getById (id);
+        GameToEditDTO gameToEdit = gameService.getById (id);
+        if(gameToEdit.equals(null)){
+            throw new IllegalArgumentException(GAME_NOT_EXIST);
+        }
 
         for (int i = 2; i < args.length; i++) {
             String[] toEdit = args[i].split ("=");
             switch (toEdit[0]) {
-                case "title" -> gameDTO.setTitle (toEdit[1]);
-                case "trailerId" -> gameDTO.setTrailerId (toEdit[1]);
-                case "thumbnailUrl" -> gameDTO.setImageUrl (toEdit[1]);
-                case "size" -> gameDTO.setSize (Float.parseFloat (toEdit[1]));
-                case "price" -> gameDTO.setPrice (new BigDecimal (toEdit[1]));
-                case "description" -> gameDTO.setDescription (toEdit[1]);
+                case "title" -> gameToEdit.setTitle (toEdit[1]);
+                case "trailerId" -> gameToEdit.setTrailerId (toEdit[1]);
+                case "thumbnailUrl" -> gameToEdit.setImageUrl (toEdit[1]);
+                case "size" -> gameToEdit.setSize (Float.parseFloat (toEdit[1]));
+                case "price" -> gameToEdit.setPrice (new BigDecimal (toEdit[1]));
+                case "description" -> gameToEdit.setDescription (toEdit[1]);
                 case "releaseDate" -> {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern ("dd-MM-yyyy");
-                    gameDTO.setReleaseDate (LocalDate.parse (args[1], formatter));
+                    gameToEdit.setReleaseDate (LocalDate.parse (args[1], formatter));
                 }
                 default -> throw new IllegalArgumentException ("Unknown game field: " + args[0]);
             }
         }
-        Game gameToSave = gameDTO.toGame ();
+        Game gameToSave = gameToEdit.toGame ();
         this.gameRepository.save (gameToSave);
-        return "Edited " + gameDTO.getTitle ();
+        return "Edited " + gameToEdit.getTitle ();
     }
 
     @Override
@@ -92,10 +95,10 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public GameDTO getById(Long id) {
+    public GameToEditDTO getById(Long id) {
         return modelMapper.map (gameRepository.findById (id)
                         .orElseThrow (() -> new IllegalArgumentException ("Invalid game id!")),
-                GameDTO.class);
+                GameToEditDTO.class);
     }
 
 

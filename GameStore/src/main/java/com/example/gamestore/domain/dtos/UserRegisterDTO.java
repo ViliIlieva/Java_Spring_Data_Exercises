@@ -4,6 +4,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.regex.Pattern;
 
+import static com.example.gamestore.constants.Commands.*;
 import static com.example.gamestore.constants.Validations.*;
 
 @Validated
@@ -70,6 +71,6 @@ public class UserRegisterDTO {
     }
 
     public String successfulRegisterFormat() {
-        return String.format (EMAIL_NOT_VALID_MESSAGE, fullName);
+        return String.format (SUCCSESSFUL_REGISTER_FORMAT, fullName);
     }
 }

@@ -23,6 +23,8 @@ public enum Validations {
 
     public static final String IMPOSSIBLE_COMMAND = "Impossible command";
 
+    public static final String GAME_NOT_EXIST = "Game not exist";
+
 
 
 }

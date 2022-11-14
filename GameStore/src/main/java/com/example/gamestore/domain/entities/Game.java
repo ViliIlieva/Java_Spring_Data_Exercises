@@ -43,6 +43,12 @@ public class Game {
         this.releaseDate = releaseDate;
     }
 
+
+    public Game(Long id, String title, String trailerId, String imageUrl, float size, BigDecimal price, String description, LocalDate releaseDate) {
+    this();
+    this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
