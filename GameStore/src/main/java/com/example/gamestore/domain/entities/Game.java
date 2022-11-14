@@ -45,8 +45,14 @@ public class Game {
 
 
     public Game(Long id, String title, String trailerId, String imageUrl, float size, BigDecimal price, String description, LocalDate releaseDate) {
-    this();
-    this.id = id;
+        this.id = id;
+        this.title = title;
+        this.trailerId = trailerId;
+        this.thumbnailUrl = thumbnailUrl;
+        this.size = size;
+        this.price = price;
+        this.description = description;
+        this.releaseDate = releaseDate;
     }
 
     public Long getId() {
