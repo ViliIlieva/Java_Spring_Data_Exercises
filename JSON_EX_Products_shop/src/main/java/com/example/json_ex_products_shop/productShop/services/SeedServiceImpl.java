@@ -2,6 +2,8 @@ package com.example.json_ex_products_shop.productShop.services;
 
 import com.example.json_ex_products_shop.productShop.entities.categories.Category;
 import com.example.json_ex_products_shop.productShop.entities.categories.CategoryImportDTO;
+import com.example.json_ex_products_shop.productShop.entities.products.Product;
+import com.example.json_ex_products_shop.productShop.entities.products.ProductImportDTO;
 import com.example.json_ex_products_shop.productShop.entities.users.User;
 import com.example.json_ex_products_shop.productShop.entities.users.UserImportDTO;
 import com.example.json_ex_products_shop.productShop.repositories.CategoryRepository;
@@ -26,6 +28,9 @@ public class SeedServiceImpl implements SeedService {
             Path.of ("src","main", "resources", "productshop","users.json");
     private static final Path CATEGORIES_JSON_PATH =
             Path.of ("src","main","resources","productshop","categories.json");
+
+    private static final Path PRODUCTS_JSON_PATH =
+            Path.of ("src","main","resources","productshop","products.json");
 
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
@@ -70,7 +75,19 @@ public class SeedServiceImpl implements SeedService {
     }
 
     @Override
-    public void seedProducts() {
+    public void seedProducts() throws FileNotFoundException {
+        FileReader fileReader = new FileReader (PRODUCTS_JSON_PATH.toAbsolutePath ().toString ());
+        ProductImportDTO[] productImportDTOS = this.gson.fromJson (fileReader, ProductImportDTO[].class);
 
+        List<Product> categories = Arrays.stream (productImportDTOS)
+                .map(importDTO -> this.modelMapper.map (importDTO, Product.class))
+                .map(this::setRandomSeller)
+                .collect(Collectors.toList ());
+    }
+
+    private Product setRandomSeller(Product product){
+        User seller = this.userService.getRandomUser();
+        product.setSeller(seller);
+        return  product;
     }
 }
