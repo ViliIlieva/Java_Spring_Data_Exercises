@@ -1,5 +1,6 @@
 package com.example.json_ex_products_shop.productShop;
 
+import com.example.json_ex_products_shop.productShop.entities.categories.CategoryStats;
 import com.example.json_ex_products_shop.productShop.entities.products.ProductWithoutBuyerDTO;
 import com.example.json_ex_products_shop.productShop.entities.users.UserWithSoldProductsDTO;
 import com.example.json_ex_products_shop.productShop.services.UserService;
@@ -29,16 +30,16 @@ public class ProductShopRunner implements CommandLineRunner {
         this.productService = productService;
         this.userService = userService;
 
-        this.gson = new GsonBuilder ()
-                .setPrettyPrinting ()
-                .create ();
+        this.gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
     }
 
     @Override
     public void run(String... args) throws Exception {
 //        this.seedService.seedUsers ();
 //        this.seedService.seedCategories ();
-//        this.seedService.seedProducts ();
+//        this.seedService.seedProducts();
 
 //        Query 1 – Products in Range
 //        productsBetweenPriceWithoutBuyer ();
@@ -46,17 +47,25 @@ public class ProductShopRunner implements CommandLineRunner {
 //        Query 2 – Successfully Sold Products
 //        successfullySoldProducts ();
 
+//        Query 3 – Categories by Products Count
+//        List<CategoryStats> categoryStatistics = this.productService.getCategoryStatistics();
+//        String json = this.gson.toJson(categoryStatistics);
+//        System.out.println(json);
+
+//        Query 4 – Users and Products
+        this.userService.getUserWithSoldProductsOrderByCount();
+
     }
 
-    private void successfullySoldProducts() {
-        List<UserWithSoldProductsDTO> userWithSoldProducts = this.userService.getUserWithSoldProducts ();
-        String json = this.gson.toJson (userWithSoldProducts);
-        System.out.println (json);
-    }
+//    private void successfullySoldProducts() {
+//        List<UserWithSoldProductsDTO> userWithSoldProducts = this.userService.getUserWithSoldProducts ();
+//        String json = this.gson.toJson (userWithSoldProducts);
+//        System.out.println (json);
+//    }
 
-    private void productsBetweenPriceWithoutBuyer() {
-        List<ProductWithoutBuyerDTO> output = this.productService.getProductsInPriceRangeForSell (500, 1000);
-        String json = this.gson.toJson (output);
-        System.out.println (json);
-    }
+//    private void productsBetweenPriceWithoutBuyer() {
+//        List<ProductWithoutBuyerDTO> output = this.productService.getProductsInPriceRangeForSell (500, 1000);
+//        String json = this.gson.toJson (output);
+//        System.out.println (json);
+//    }
 }

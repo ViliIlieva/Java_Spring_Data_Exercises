@@ -34,4 +34,13 @@ public class UserServiceImpl implements UserService{
 
 
     }
+
+    @Override
+    @Transactional
+    public List<User> getUserWithSoldProductsOrderByCount() {
+        List<User> all = this.userRepository.findAllWithSoldProductsOrderByCount();
+            all.get(0).getSellingItems().size();
+            return null;
+    }
 }
+

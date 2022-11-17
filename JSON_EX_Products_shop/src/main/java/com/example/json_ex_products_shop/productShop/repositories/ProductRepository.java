@@ -1,5 +1,6 @@
 package com.example.json_ex_products_shop.productShop.repositories;
 
+import com.example.json_ex_products_shop.productShop.entities.categories.CategoryStats;
 import com.example.json_ex_products_shop.productShop.entities.products.Product;
 import com.example.json_ex_products_shop.productShop.entities.products.ProductWithoutBuyerDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             " order by p.price asc")
     List<ProductWithoutBuyerDTO> findAllByPriceBetweenAndBuyerIsNullOrderByPriceAsc(
             BigDecimal rangeStart, BigDecimal rangeEnd);
+
+    @Query("select new com.example.json_ex_products_shop.productShop.entities.categories.CategoryStats(" +
+            "c.name, count(p), AVG(p.price), SUM(p.price))" +
+            " from Product p" +
+            " join p.categories c" +
+            " group by c")
+    List<CategoryStats> getCategoryStats();
 }

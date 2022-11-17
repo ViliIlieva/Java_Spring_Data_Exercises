@@ -1,5 +1,6 @@
 package com.example.json_ex_products_shop.productShop.services;
 
+import com.example.json_ex_products_shop.productShop.entities.categories.CategoryStats;
 import com.example.json_ex_products_shop.productShop.entities.products.ProductWithoutBuyerDTO;
 import com.example.json_ex_products_shop.productShop.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +24,10 @@ public class ProductServiceImpl implements ProductService{
         BigDecimal rangeStart = BigDecimal.valueOf (from);
         BigDecimal rangeEnd = BigDecimal.valueOf (to);
         return this.productRepository.findAllByPriceBetweenAndBuyerIsNullOrderByPriceAsc(rangeStart, rangeEnd);
+    }
+
+    @Override
+    public List<CategoryStats> getCategoryStatistics() {
+        return this.productRepository.getCategoryStats();
     }
 }
