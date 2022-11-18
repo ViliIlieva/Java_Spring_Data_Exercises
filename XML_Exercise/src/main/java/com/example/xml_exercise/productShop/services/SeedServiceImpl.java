@@ -1,6 +1,7 @@
 package com.example.xml_exercise.productShop.services;
 
 import com.example.xml_exercise.productShop.entities.categories.Category;
+import com.example.xml_exercise.productShop.entities.categories.CategoryImportDTO;
 import com.example.xml_exercise.productShop.entities.products.Product;
 import com.example.xml_exercise.productShop.entities.users.User;
 import com.example.xml_exercise.productShop.repositories.CategoryRepository;
@@ -9,10 +10,16 @@ import com.example.xml_exercise.productShop.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SeedServiceImpl implements SeedService {
@@ -37,13 +44,22 @@ public class SeedServiceImpl implements SeedService {
     }
 
     @Override
-    public void seedUsers() throws FileNotFoundException {
+    public void seedUsers() throws FileNotFoundException, JAXBException {
+
 
     }
 
     @Override
-    public void seedCategories() throws FileNotFoundException {
+    public void seedCategories() throws FileNotFoundException, JAXBException {
+        JAXBContext context = JAXBContext.newInstance(CategoryImportDTO.class);
+        Unmarshaller unmarshaller = context.createUnmarshaller();//стринг към обекти
 
+        FileReader xmlReader = new FileReader(CATEGORIES_XML_PATH.toAbsolutePath().toString());
+        CategoryImportDTO importDTO = (CategoryImportDTO) unmarshaller.unmarshal(xmlReader);
+
+        List<Category> entities = importDTO.getCategories().stream()
+                .map(c -> new Category(c.getName())).toList();
+        this.categoryRepository.saveAll(entities);
     }
 
     @Override
