@@ -2,6 +2,7 @@ package com.example.json_ex_products_shop.productShop.services;
 
 import com.example.json_ex_products_shop.productShop.entities.users.User;
 import com.example.json_ex_products_shop.productShop.entities.users.UserWithSoldProductsDTO;
+import com.example.json_ex_products_shop.productShop.entities.users.UserWithSoldProductsDetailDTO;
 import com.example.json_ex_products_shop.productShop.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
@@ -26,21 +27,24 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public List<UserWithSoldProductsDTO> getUserWithSoldProducts() {
-        List<User> allWithSoldProducts = this.userRepository.findAllWithSoldProducts ();
+        List<User> allWithSoldProducts = this.userRepository.findAllWithSoldProducts();
 
-      return   allWithSoldProducts.stream ()
-                .map (user -> this.modelMapper.map (user, UserWithSoldProductsDTO.class))
-                .collect (Collectors.toList ());
+        return allWithSoldProducts.stream()
+                .map(user -> this.modelMapper.map(user, UserWithSoldProductsDTO.class))
+                .collect(Collectors.toList());
 
 
     }
 
     @Override
     @Transactional
-    public List<User> getUserWithSoldProductsOrderByCount() {
+    public List<UserWithSoldProductsDetailDTO> getUserWithSoldProductsOrderByCount() {
         List<User> all = this.userRepository.findAllWithSoldProductsOrderByCount();
-            all.get(0).getSellingItems().size();
-            return null;
+        all.get(0).getSellingItems().size();
+
+        return all.stream()
+                .map(user -> this.modelMapper.map(user, UserWithSoldProductsDetailDTO.class))
+                .collect(Collectors.toList());
     }
 }
 
