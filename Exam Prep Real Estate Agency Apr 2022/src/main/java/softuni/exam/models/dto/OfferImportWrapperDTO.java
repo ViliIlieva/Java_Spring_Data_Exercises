@@ -20,5 +20,5 @@ import java.util.List;
 public class OfferImportWrapperDTO {
 
     @XmlElement(name = "offer")
-    List<OfferImportDTO> offers;
+    private List<OfferImportDTO> offers;
 }

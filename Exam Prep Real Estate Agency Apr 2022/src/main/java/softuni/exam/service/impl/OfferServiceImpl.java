@@ -77,7 +77,6 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public String importOffers() throws IOException, JAXBException {
-        //от файло към wrapper класа
         OfferImportWrapperDTO offerDTOs = (OfferImportWrapperDTO)
                 this.unmarshaller.unmarshal (
                 new FileReader (path.toAbsolutePath ().toString ()));
@@ -89,25 +88,24 @@ public class OfferServiceImpl implements OfferService {
                     this.validator.validate (dto);
 
             if(errors.isEmpty ()){
-                Optional<Agent> agent =//дали агента го има в базата
-                        this.agentRepository.findByFirstName (dto.getAgent ().getName ());
+                Agent agent =//дали агента го има в базата
+                        this.agentRepository.findByFirstNameOrderByFirstName (dto.getAgent ().getName ());
 
-                if(agent.isPresent ()){//ако го има можем да добавяме офертата
+                if(agent != null){//ако го има можем да добавяме офертата
                     //вземам и апартамента
-                    Optional<Apartment> apartment =
-                            this.apartmentRepository.findById (dto.getApartment ().getId ());
+                    Apartment apartment =
+                            this.apartmentRepository.findByIdOrderById (dto.getApartment ().getId ());
                     Offer offer = this.modelMapper.map (dto, Offer.class);
 
-                    offer.setAgent (agent.get ());
-                    offer.setApartment (apartment.get ());
+                    offer.setAgent (agent);
+                    offer.setApartment (apartment);
 
                     this.offerRepository.save (offer);
 
-                    result.add (String.format ("Successfully imported offer %s", offer.getPrice ()));
+                    result.add (String.format ("Successfully imported offer %.2f", offer.getPrice ()));
                 }else {
                     result.add ("Invalid offer");
                 }
-
             }else {
                 result.add ("Invalid offer");
             }
@@ -115,34 +113,18 @@ public class OfferServiceImpl implements OfferService {
         return String.join ("\n", result);
     }
 
-//    private String importOffer(OfferImportDTO dto) {
-//        Set<ConstraintViolation<OfferImportDTO>> errors =
-//                this.validator.validate (dto);
-//
-//        if(!errors.isEmpty ()){
-//            return "Invalid offer";
-//        }
-//        Optional<Agent> agent =
-//                this.agentRepository.findByFirstName (dto.getAgent ().getName ());
-//
-//        if(agent.isEmpty ()){//ако няма такъв агент не го импортваме към базата
-//            return "Invalid offer";
-//        }
-//
-//        Optional<Apartment> apartment = this.apartmentRepository.findById (dto.getApartment ().getId ());
-//
-//        Offer offer = this.modelMapper.map (dto, Offer.class);
-//
-//        offer.setAgent (agent.get ());
-//        offer.setApartment (apartment.get ());
-//
-//        this.offerRepository.save (offer);
-//        return String.format ("Successfully imported offer %s", offer.getPrice ());
-//    }
-
     @Override
     public String exportOffers() {
-        return null;
+//        String apartmentType = "1";
+
+        List<Offer> offers = this.offerRepository.findAllByApartmentType ();
+
+        return offers
+                .stream ()
+                .map (Offer::toString)
+                .collect(Collectors.joining("\n"));
+
+
     }
 }
 

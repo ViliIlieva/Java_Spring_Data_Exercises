@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface AgentRepository extends JpaRepository<Agent, Long> {
 
     Optional<Agent> findByFirstName(String firstName);
+
+    Agent findByFirstNameOrderByFirstName(String firstName);
 }

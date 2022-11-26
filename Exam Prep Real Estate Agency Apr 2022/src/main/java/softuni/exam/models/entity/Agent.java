@@ -28,6 +28,6 @@ public class Agent {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Town town;
 }
